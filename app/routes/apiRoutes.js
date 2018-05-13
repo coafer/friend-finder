@@ -1,11 +1,10 @@
 // ===============================================================================
 // LOAD DATA
 // We are linking our routes to a series of "data" sources.
-// These data sources hold arrays of information on table-data, waitinglist, etc.
+// These data sources hold arrays of information on friends.
 // ===============================================================================
 
-var tableData = require("../data/tableData");
-var waitListData = require("../data/waitinglistData");
+var friendData = require("../data/friends");
 
 
 // ===============================================================================
@@ -19,12 +18,8 @@ module.exports = function(app) {
   // (ex: localhost:PORT/api/admin... they are shown a JSON of the data in the table)
   // ---------------------------------------------------------------------------
 
-  app.get("/api/tables", function(req, res) {
-    res.json(tableData);
-  });
-
-  app.get("/api/waitlist", function(req, res) {
-    res.json(waitListData);
+  app.get("/api/home", function(req, res) {
+    res.json(friendData);
   });
 
   // API POST Requests
@@ -32,15 +27,15 @@ module.exports = function(app) {
   // In each of the below cases, when a user submits form data (a JSON object)
   // ...the JSON is pushed to the appropriate JavaScript array
   // (ex. User fills out a reservation request... this data is then sent to the server...
-  // Then the server saves the data to the tableData array)
+  // Then the server saves the data to the friendData array)
   // ---------------------------------------------------------------------------
 
-  app.post("/api/tables", function(req, res) {
+  app.post("/api/survey", function(req, res) {
     // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
     // It will do this by sending out the value "true" have a table
     // req.body is available since we're using the body-parser middleware
-    if (tableData.length < 5) {
-      tableData.push(req.body);
+    if (friendData.length < 5) {
+      friendData.push(req.body);
       res.json(true);
     }
     else {
@@ -53,11 +48,10 @@ module.exports = function(app) {
   // I added this below code so you could clear out the table while working with the functionality.
   // Don"t worry about it!
 
-  app.post("/api/clear", function() {
-    // Empty out the arrays of data
-    tableData = [];
-    waitListData = [];
+  // app.post("/api/clear", function() {
+  //   // Empty out the arrays of data
+  //   friendData = [];
 
-    console.log(tableData);
-  });
+  //   console.log(friendData);
+  // });
 };
