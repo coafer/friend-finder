@@ -168,8 +168,52 @@
       
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/JavaScript">
+      $("#submit").on("click", function(event){
+        event.preventDefault();
+
+        //Having the info from survey
+        // Here we grab the form elements
+        var userData = {
+          name: $("#name").val().trim(),
+          photo: $("#photo").val().trim(),
+          scores: [
+          $("#q1").val().trim(),
+          $("#q2").val().trim(),
+          $("#q3").val().trim(),
+          $("#q4").val().trim(),
+          $("#q5").val().trim(),
+          $("#q6").val().trim(),
+          $("#q7").val().trim(),
+          $("#q8").val().trim(),
+          $("#q9").val().trim(),
+          $("#q10").val().trim()]
+        };
+        // totalScore: function(){
+        //     var total = 0;
+        //     // for (let index = 0; index < this.scores.length; index++) {
+        //     //   total += index;
+        //     // }
+        //     console.log(scores[].length);
+        //     return total;
+        //   }()
+         
+        console.log(userData);
+
+        $.post("/api/survey", userData, function(data){
+          if (data) {
+            alert("Yay! You are officially booked!");
+          }
+          //The pop up modal will happen here
+          
+          // Clear the form when submitting
+          $("#q1, #q2, #q3, #q4, #q5, #q6, #q7, #q8, #q9, #q10").val("");
+        });
+
+      });
+    </script>
   </body>
 </html>
