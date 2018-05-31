@@ -40,7 +40,13 @@ module.exports = function(app) {
       scores: { value: newFriendScoresNumbers}
     });
     
+    //pushing the data from new friend to the database
     friendData.push(newFriend);
+
+    //Adding all values for total score of new friend
+    var newFriendSums = reductor();
+    var newFriendTotal = newFriendScoresNumbers.reduce(newFriendSums);
+    console.log ("This is the total of the new friedn array: " + newFriendTotal);
 
     //Array that will holds all total values
     var friendTotalAll = [];
@@ -63,26 +69,25 @@ module.exports = function(app) {
       console.log("This is the total of all in the array: " + friendTotalAll);
     }
 
+    //Having the total values of all friends in data and the total value of the new friend
+    //Lets find the difference and the smalles difference would be the best match
+    var bestMatch = friendTotalAll.map(x => Math.abs(x - newFriendTotal));
+    console.log(bestMatch);
     
+    //finding the index of the smallest difference
+    var indexOfMinValue = bestMatch.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0);
 
-    res.json(true);
+    //returning the best match
+    var bestMatchFromData = friendData[indexOfMinValue];
+
+
+    res.json(bestMatchFromData);
+    console.log(bestMatchFromData);
     console.log(friendData);
-
-
-    // var dataSurvey = req.body;
-    // console.log("this is " + dataSurvey + "data");
-    // //Have the data from the friends.js
-    // // var friendScore = function(friendData){
-    // //   for (let index = 0; index < friendData.length; index++) {
-    // //     const scores = friendData[index].scores;
-    // //     console.log(scores);
-    // //   }
-    // // }
 
   });
 
 };
-
 
 function reductor() {
   return (accumulator, currentValue) => accumulator + currentValue;
