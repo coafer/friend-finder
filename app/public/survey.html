@@ -165,6 +165,27 @@
             </footer>
         
           </div>
+          <!-- Modal -->
+          <div id="results-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h2 class="modal-title"><strong>Best Match</strong></h2>
+                </div>
+                <div class="modal-body">
+                  <h2 id="match-name"></h2>
+                  <img id="match-img" src="" alt="">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
       
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -174,44 +195,60 @@
     <script type="text/JavaScript">
       $("#submit").on("click", function(event){
         event.preventDefault();
+       
+        // Form validation
+        function validateForm() {
+          var isValid = true;
+          $(".form-control").each(function() {
+            if ($(this).val() === "") {
+              isValid = false;
+            }
+          });
+
+          $(".chosen-select").each(function() {
+
+            if ($(this).val() === "") {
+              isValid = false;
+            }
+          });
+          return isValid;
+        }
 
         //Having the info from survey
         // Here we grab the form elements
+        if (validateForm()) {
+        // Create an object for the user"s data
         var userData = {
-          name: $("#name").val().trim(),
-          photo: $("#photo").val().trim(),
+          name: $("#name").val(),
+          photo: $("#photo").val(),
           scores: [
-          $("#q1").val().trim(),
-          $("#q2").val().trim(),
-          $("#q3").val().trim(),
-          $("#q4").val().trim(),
-          $("#q5").val().trim(),
-          $("#q6").val().trim(),
-          $("#q7").val().trim(),
-          $("#q8").val().trim(),
-          $("#q9").val().trim(),
-          $("#q10").val().trim()]
+            $("#q1").val(),
+            $("#q2").val(),
+            $("#q3").val(),
+            $("#q4").val(),
+            $("#q5").val(),
+            $("#q6").val(),
+            $("#q7").val(),
+            $("#q8").val(),
+            $("#q9").val(),
+            $("#q10").val()
+          ]
         };
-        // totalScore: function(){
-        //     var total = 0;
-        //     // for (let index = 0; index < this.scores.length; index++) {
-        //     //   total += index;
-        //     // }
-        //     console.log(scores[].length);
-        //     return total;
-        //   }()
-         
-        console.log(userData);
 
-        $.post("/api/survey", userData, function(data){
-          if (data) {
-            alert("Yay! You are officially booked!");
-          }
-          //The pop up modal will happen here
-          
-          // Clear the form when submitting
-          $("#q1, #q2, #q3, #q4, #q5, #q6, #q7, #q8, #q9, #q10").val("");
+        // AJAX post the data to the friends API.
+        $.post("/api/survey", userData, function(data) {
+
+          // Grab the result from the AJAX post so that the best match's name and photo are displayed.
+          $("#match-name").text(data.name);
+          $("#match-img").attr("src", data.photo);
+
+          // Show the modal with the best match
+          $("#results-modal").modal("toggle");
+
         });
+      } else {
+        alert("Please fill out all fields before submitting!");
+      }
 
       });
     </script>

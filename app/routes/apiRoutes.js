@@ -16,9 +16,9 @@ module.exports = function(app) {
   // Below code handles when users "send" a request a page.
   
 
-  // app.get("/api/survey", function(req, res) {
-  //   res.json(friendData);
-  // });
+  app.get("/api/friends", function(req, res) {
+    res.json(friendData);
+  });
 
   // API POST Requests
   // Below code handles when a user submits a form and thus submits data to the server.
@@ -29,9 +29,46 @@ module.exports = function(app) {
   // ---------------------------------------------------------------------------
 
   app.post("/api/survey", function(req, res) {
-    friendData.push(req.body);
+    
+    //Parsing score data from survey to integers
+    var newFriend = req.body;
+    var newFriendScores = newFriend.scores;
+    var newFriendScoresNumbers = newFriendScores.map(Number);
+
+    //redefining the newfriend data to push to the data base as scores = array of integers
+    Object.defineProperties(newFriend, {
+      scores: { value: newFriendScoresNumbers}
+    });
+    
+    friendData.push(newFriend);
+
+    //Array that will holds all total values
+    var friendTotalAll = [];
+
+    //Loop through the data to calculate total scores
+    for (var i = 0; i < 10; i++){
+
+      //Get the data from the possible friends
+      var frindsScore = friendData[i].scores;
+
+      console.log("this is friendScore: "+ frindsScore);
+
+      //Add to get total score from possible friends
+      var friendSums = reductor();
+      var friendTotal =  frindsScore.reduce(friendSums);
+      console.log("This is xxx: " + friendTotal);
+      
+      //Push the totals to the array that holds all results
+      friendTotalAll.push(friendTotal);
+      console.log("This is the total of all in the array: " + friendTotalAll);
+    }
+
+    
+
     res.json(true);
     console.log(friendData);
+
+
     // var dataSurvey = req.body;
     // console.log("this is " + dataSurvey + "data");
     // //Have the data from the friends.js
@@ -44,14 +81,11 @@ module.exports = function(app) {
 
   });
 
-  // ---------------------------------------------------------------------------
-  // I added this below code so you could clear out the table while working with the functionality.
-  // Don"t worry about it!
-
-  // app.post("/api/clear", function() {
-  //   // Empty out the arrays of data
-  //   friendData = [];
-
-  //   console.log(friendData);
-  // });
 };
+
+
+function reductor() {
+  return (accumulator, currentValue) => accumulator + currentValue;
+}
+
+
